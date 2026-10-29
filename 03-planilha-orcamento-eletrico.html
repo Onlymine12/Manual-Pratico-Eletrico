@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Planilha de Orçamento Elétrico</title>
+<meta name="theme-color" content="#010E1E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================
+   Planilha de Orçamento Elétrico — Manual Prático do
+   Eletricista Residencial. Funciona offline; os dados ficam
+   salvos no próprio aparelho (navegador).
+   ========================================================== */
+:root{
+  --bg:#F9FAFC; --surface:#fff; --tint:#EFF6FF; --line:#DCE6F7; --line2:#C3D4F3;
+  --blue:#1547E6; --blue6:#0F38BF; --bdark:#1D398D; --navy:#010E1E; --navy2:#0A1F47;
+  --amber:#F5B400; --amberS:#FFF5D6; --green:#00A73E; --greenS:#E8F7EE; --red:#D92D20;
+  --text:#0E1A33; --muted:#5A6A85;
+  --fT:"Archivo","Arial Black","Segoe UI",system-ui,sans-serif;
+  --fB:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 var(--fB);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+[hidden]{display:none!important}
+.ic{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* topo */
+.topo{position:sticky;top:0;z-index:30;color:#fff;
+  background:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px) 0 0/22px 22px,linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px) 0 0/22px 22px,linear-gradient(120deg,var(--navy),var(--navy2))}
+.topo-in{max-width:1100px;margin:0 auto;padding:12px 16px 0}
+.marca{display:flex;align-items:center;gap:10px}
+.logo{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(140deg,#FFCD3C,var(--amber));flex:none}
+.logo .ic{fill:var(--navy);stroke:var(--navy)}
+.marca small{display:block;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#9DB5E6;font-weight:600}
+.marca strong{display:block;font:900 17px/1.1 var(--fT);text-transform:uppercase}
+.abas{display:flex;gap:4px;margin-top:12px;overflow-x:auto;scrollbar-width:none}
+.abas button{padding:11px 14px;font-weight:700;font-size:14px;color:#9DB5E6;border-bottom:3px solid transparent;white-space:nowrap}
+.abas button.on{color:#fff;border-color:var(--amber)}
+
+main{max-width:1100px;margin:0 auto;padding:18px 16px 130px}
+.layout{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+.layout>*,.grid>*,.etapa-b>*{min-width:0}
+select{min-width:0;text-overflow:ellipsis}
+@media(min-width:960px){.layout{grid-template-columns:minmax(0,1fr) 340px;align-items:start}.resumo-col{position:sticky;top:110px}main{padding-bottom:40px}}
+
+.intro{background:var(--tint);border:1px solid var(--line2);border-radius:16px;padding:14px 16px;font-size:14px;color:var(--bdark);display:flex;gap:10px}
+.intro .ic{color:var(--blue);margin-top:2px}
+
+/* cartões de etapa */
+.etapa{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 2px rgba(16,40,100,.05),0 6px 18px rgba(16,40,100,.05);overflow:hidden}
+.etapa-h{display:flex;align-items:center;gap:12px;padding:15px 16px;border-bottom:1px solid var(--line);cursor:pointer;user-select:none}
+.num{width:30px;height:30px;border-radius:50%;background:var(--navy);color:var(--amber);font:900 14px var(--fT);display:grid;place-items:center;flex:none}
+.etapa-h h2{margin:0;font:800 16px var(--fT);color:var(--navy);flex:1}
+.etapa-h small{display:block;font:500 12.5px var(--fB);color:var(--muted)}
+.etapa-h .seta{color:var(--muted);transition:transform .2s}
+.etapa.fechada .etapa-h{border-bottom:0}
+.etapa.fechada .seta{transform:rotate(-90deg)}
+.etapa.fechada .etapa-b{display:none}
+.etapa-b{padding:16px}
+
+.grid{display:grid;gap:12px}
+@media(min-width:620px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}}
+label.campo{display:block}
+label.campo span{display:block;font-size:12.5px;font-weight:700;color:var(--bdark);margin-bottom:5px}
+label.campo em{font-style:normal;font-weight:500;color:var(--muted)}
+input,select,textarea{width:100%;min-height:46px;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;background:#fff;outline:none;font-size:16px;transition:border-color .2s,box-shadow .2s}
+textarea{min-height:76px;resize:vertical}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(21,71,230,.12)}
+.pre{position:relative}.pre input{padding-left:38px}.pre b{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--muted);font-weight:600}
+.pos{position:relative}.pos input{padding-right:34px}.pos b{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--muted);font-weight:600}
+
+/* itens */
+.add{display:grid;gap:8px;grid-template-columns:minmax(0,1fr) auto;margin-bottom:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 16px;border-radius:12px;font:800 13.5px var(--fT);letter-spacing:.02em;text-transform:uppercase;transition:transform .12s,background .2s,box-shadow .2s;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn-p{background:var(--blue);color:#fff;box-shadow:0 8px 20px rgba(21,71,230,.25)}.btn-p:hover{background:var(--blue6)}
+.btn-s{background:#fff;color:var(--bdark);border:1.5px solid var(--line2)}.btn-s:hover{border-color:var(--blue);color:var(--blue)}
+.btn-g{background:var(--green);color:#fff;box-shadow:0 8px 20px rgba(0,167,62,.22)}
+.btn-a{background:var(--amber);color:var(--navy)}
+.btn-bloco{width:100%}
+.linha{display:grid;grid-template-columns:1fr 34px;gap:8px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#FCFDFF;margin-bottom:10px}
+.linha .desc{grid-column:1/2}
+.linha .x{grid-row:1;grid-column:2;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--red);background:#FDECEA;align-self:center}
+.linha .nums{grid-column:1/-1;display:grid;grid-template-columns:72px 1fr 1fr;gap:8px;align-items:end}
+.linha .nums label span{font-size:11.5px}
+.linha .sub{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;font:800 15px var(--fT);color:var(--navy);padding-top:2px}
+.linha .sub small{display:inline}
+.linha .sub small{font:600 11px var(--fB);color:var(--muted)}
+@media(min-width:620px){.linha{grid-template-columns:1fr 70px 70px 130px 120px 34px;align-items:end}.linha .desc{grid-column:auto}.linha .nums{display:contents}.linha .x{grid-row:auto;grid-column:auto;margin-bottom:6px}.linha .sub{grid-column:auto;display:block;text-align:right;padding:0 0 12px}.linha .sub small{display:block}}
+.un{font-size:14px!important;padding:10px 6px!important}
+.vazio{text-align:center;color:var(--muted);font-size:14px;padding:18px;border:1.5px dashed var(--line2);border-radius:14px;margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:-2px 0 12px}
+.chips button{font-size:12.5px;font-weight:600;padding:7px 11px;border-radius:999px;background:var(--tint);color:var(--bdark);border:1px solid var(--line2)}
+.chips button:hover{border-color:var(--blue);color:var(--blue)}
+.toggle{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;background:var(--amberS);border:1px solid #F1DB96;font-size:14px;margin-bottom:12px;cursor:pointer}
+.toggle input{width:22px;height:22px;min-height:0;flex:none;accent-color:var(--blue)}
+.dica{font-size:12.5px;color:var(--muted);margin:8px 2px 0}
+.formas{display:flex;flex-wrap:wrap;gap:8px}
+.formas label{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border:1.5px solid var(--line);border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;background:#fff}
+.formas input{width:18px;height:18px;min-height:0;accent-color:var(--blue)}
+.logo-up{display:flex;gap:12px;align-items:center}
+.logo-prev{width:64px;height:64px;border-radius:14px;border:1.5px dashed var(--line2);display:grid;place-items:center;background:#fff;overflow:hidden;color:var(--muted);font-size:11px;text-align:center;flex:none}
+.logo-prev img{width:100%;height:100%;object-fit:contain}
+
+/* resumo */
+.resumo{background:var(--navy);color:#fff;border-radius:20px;padding:18px;box-shadow:0 20px 40px rgba(1,14,30,.22)}
+.resumo h3{margin:0 0 10px;font:800 13px var(--fT);letter-spacing:.08em;text-transform:uppercase;color:#9DB5E6}
+.rl{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed rgba(255,255,255,.12);font-size:14px;color:#C9D6F2}
+.rl b{color:#fff;font-weight:600;white-space:nowrap}
+.rl.neg b{color:#FF9A90}
+.total{margin-top:12px;padding:14px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+.total small{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--amber)}
+.total strong{display:block;font:900 32px/1.1 var(--fT)}
+.lucro{margin-top:10px;font-size:12.5px;color:#9DB5E6}
+.lucro b{color:#7CE3A1}
+.acoes{display:grid;gap:8px;margin-top:14px}
+.barra{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(1,14,30,.97);color:#fff;padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:flex;gap:12px;align-items:center;justify-content:space-between;box-shadow:0 -10px 30px rgba(1,14,30,.25)}
+.barra small{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);font-weight:700}
+.barra strong{font:900 22px var(--fT)}
+@media(min-width:960px){.barra{display:none}}
+
+/* salvos */
+.salvo{display:flex;gap:12px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:14px;background:#fff;margin-bottom:10px}
+.salvo div{flex:1;min-width:0}
+.salvo strong{display:block;font:800 15px var(--fT);color:var(--navy)}
+.salvo small{color:var(--muted);font-size:13px}
+.salvo .v{font:900 16px var(--fT);color:var(--blue);white-space:nowrap}
+.mini{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--tint);color:var(--blue)}
+.mini.r{background:#FDECEA;color:var(--red)}
+
+.toast{position:fixed;left:50%;bottom:96px;z-index:60;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--navy);color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;box-shadow:0 12px 30px rgba(1,14,30,.3);transition:.25s;max-width:calc(100% - 32px);text-align:center}
+.toast.ver{opacity:1;transform:translate(-50%,0)}
+
+/* ===== DOCUMENTO DO CLIENTE (prévia e PDF) ===== */
+.prev-wrap{overflow-x:auto;padding:4px 0 20px}
+.prev-acoes{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+#doc{width:210mm;min-height:297mm;margin:0 auto;background:#fff;color:#0E1A33;padding:14mm 14mm 16mm;box-shadow:0 10px 40px rgba(16,40,100,.15);font-size:10pt;line-height:1.45;transform-origin:top left}
+.d-top{display:flex;justify-content:space-between;gap:10mm;align-items:flex-start;padding-bottom:6mm;border-bottom:1mm solid var(--navy);position:relative}
+.d-top::after{content:"";position:absolute;left:0;right:0;bottom:-2.6mm;height:1.4mm;background:repeating-linear-gradient(-45deg,var(--amber) 0 2.4mm,#fff 2.4mm 4.8mm)}
+.d-prest{display:flex;gap:4mm;align-items:center}
+.d-prest img{width:20mm;height:20mm;object-fit:contain}
+.d-prest .ph{width:16mm;height:16mm;border-radius:3.5mm;background:var(--navy);display:grid;place-items:center}
+.d-prest .ph svg{width:9mm;height:9mm;fill:var(--amber);stroke:none}
+.d-prest strong{display:block;font:900 15pt/1.15 var(--fT);color:var(--navy);text-transform:uppercase}
+.d-prest span{display:block;font-size:8.6pt;color:var(--muted)}
+.d-num{text-align:right}
+.d-num b{display:block;font:900 20pt/1 var(--fT);color:var(--blue);letter-spacing:.02em}
+.d-num span{display:block;font-size:8.8pt;color:var(--muted);margin-top:1.4mm}
+.d-num span strong{color:var(--navy)}
+.d-cli{margin:8mm 0 5mm;display:grid;grid-template-columns:1fr 1fr;gap:2mm 8mm;background:#EFF6FF;border-radius:3mm;padding:4mm 5mm;font-size:9.4pt}
+.d-cli h4{grid-column:1/-1;margin:0 0 1mm;font:800 8pt var(--fT);letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
+.d-cli div span{display:block;font-size:7.6pt;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.d-sec{font:800 9pt var(--fT);letter-spacing:.08em;text-transform:uppercase;color:var(--navy);margin:5mm 0 2mm;display:flex;align-items:center;gap:2mm}
+.d-sec::before{content:"";width:2.4mm;height:2.4mm;background:var(--amber);border-radius:.6mm}
+table.d-t{width:100%;border-collapse:collapse;font-size:9.2pt}
+.d-t th{background:var(--navy);color:#fff;font:800 7.6pt var(--fT);letter-spacing:.06em;text-transform:uppercase;padding:2mm 2.6mm;text-align:left}
+.d-t th.r,.d-t td.r{text-align:right;white-space:nowrap}
+.d-t th.c,.d-t td.c{text-align:center;white-space:nowrap}
+.d-t td{padding:2mm 2.6mm;border-bottom:.25mm solid #DCE6F7}
+.d-t tr:nth-child(even) td{background:#F7FAFF}
+.d-t tfoot td{font-weight:700;background:#fff!important;border-bottom:0;color:var(--bdark)}
+.d-fim{display:grid;grid-template-columns:1fr 72mm;gap:7mm;margin-top:6mm;align-items:start}
+.d-cond{font-size:9pt}
+.d-cond div{padding:1.6mm 0;border-bottom:.25mm dashed #DCE6F7}
+.d-cond b{color:var(--navy)}
+.d-tot{border:.4mm solid #C3D4F3;border-radius:3mm;overflow:hidden}
+.d-tot .l{display:flex;justify-content:space-between;padding:2mm 4mm;font-size:9.4pt;border-bottom:.25mm solid #DCE6F7}
+.d-tot .l.neg{color:var(--red)}
+.d-tot .t{background:var(--navy);color:#fff;padding:3.6mm 4mm}
+.d-tot .t span{display:block;font:800 7.6pt var(--fT);letter-spacing:.1em;text-transform:uppercase;color:var(--amber)}
+.d-tot .t strong{font:900 19pt/1.1 var(--fT)}
+.d-obs{margin-top:5mm;font-size:9pt;background:#FFF8E1;border-left:1.2mm solid var(--amber);padding:3mm 4mm;border-radius:0 2mm 2mm 0;white-space:pre-wrap}
+.d-ass{display:grid;grid-template-columns:1fr 1fr;gap:14mm;margin-top:12mm;font-size:8.6pt;color:var(--muted);text-align:center}
+.d-ass div{border-top:.3mm solid #0E1A33;padding-top:1.6mm}
+.d-pe{margin-top:5mm;font-size:7.6pt;color:var(--muted);text-align:center}
+
+@media print{
+  @page{size:A4;margin:0}
+  body{background:#fff}
+  body>*:not(#tela-doc){display:none!important}
+  #tela-doc{display:block!important;padding:0!important;margin:0!important;max-width:none!important}
+  #tela-doc>*:not(.prev-wrap){display:none!important}
+  .prev-wrap{padding:0;overflow:visible}
+  #doc{box-shadow:none;margin:0;transform:none!important;width:210mm;min-height:auto;padding:12mm 14mm 10mm}
+  .d-t tr,.d-fim,.d-ass{break-inside:avoid}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-in">
+    <div class="marca">
+      <span class="logo"><svg class="ic" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span>
+      <span><small>Manual Prático do Eletricista Residencial</small><strong>Planilha de Orçamento</strong></span>
+    </div>
+    <nav class="abas">
+      <button data-aba="form" class="on">1. Preencher</button>
+      <button data-aba="doc">2. Orçamento do cliente</button>
+      <button data-aba="salvos">Orçamentos salvos</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= TELA 1: PREENCHER ================= -->
+<main id="tela-form">
+  <div class="layout">
+    <div class="grid" style="gap:14px">
+      <div class="intro"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5v.01"/></svg>
+        <span>Preencha de cima para baixo. O total é calculado sozinho e tudo fica salvo neste aparelho, mesmo sem internet. No fim, toque em <b>Gerar PDF</b> para entregar ao cliente.</span></div>
+
+      <!-- 1. Seus dados -->
+      <section class="etapa" id="e-prest">
+        <div class="etapa-h"><span class="num">1</span><h2>Seus dados<small>Aparecem no topo do orçamento. Preencha uma vez só.</small></h2><svg class="ic seta" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></div>
+        <div class="etapa-b grid">
+          <div class="logo-up">
+            <div class="logo-prev" id="logoPrev">sua<br>logo</div>
+            <div style="flex:1"><label class="btn btn-s" style="cursor:pointer">Escolher logo<input type="file" accept="image/*" id="logoFile" hidden></label>
+              <button class="btn btn-s" id="logoRem" hidden style="margin-left:6px">Remover</button>
+              <p class="dica" style="margin-top:6px">Opcional. Sem logo, aparece um raio no lugar.</p></div>
+          </div>
+          <div class="grid g2">
+            <label class="campo"><span>Seu nome ou empresa</span><input data-k="prest.nome" placeholder="Ex.: João Eletricista"></label>
+            <label class="campo"><span>WhatsApp / telefone</span><input data-k="prest.tel" inputmode="tel" placeholder="(00) 00000-0000"></label>
+            <label class="campo"><span>CPF ou CNPJ <em>(opcional)</em></span><input data-k="prest.doc"></label>
+            <label class="campo"><span>Cidade / UF</span><input data-k="prest.cidade" placeholder="Ex.: Campinas / SP"></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Cliente -->
+      <section class="etapa" id="e-cli">
+        <div class="etapa-h"><span class="num">2</span><h2>Cliente e serviço<small>Para quem é o orçamento.</small></h2><svg class="ic seta" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></div>
+        <div class="etapa-b grid">
+          <div class="grid g2">
+            <label class="campo"><span>Nome do cliente</span><input data-k="cli.nome" placeholder="Ex.: Maria Souza"></label>
+            <label class="campo"><span>Telefone do cliente</span><input data-k="cli.tel" inputmode="tel" placeholder="(00) 00000-0000"></label>
+          </div>
+          <label class="campo"><span>Endereço da obra</span><input data-k="cli.end" placeholder="Rua, número, bairro"></label>
+          <label class="campo"><span>O que será feito <em>(resumo)</em></span><input data-k="cli.servico" placeholder="Ex.: Instalação elétrica da cozinha e troca do chuveiro"></label>
+          <div class="grid g3">
+            <label class="campo"><span>Nº do orçamento</span><input data-k="num" inputmode="numeric"></label>
+            <label class="campo"><span>Data</span><input type="date" data-k="data"></label>
+            <label class="campo"><span>Válido por</span><div class="pos"><input data-k="validade" data-n inputmode="numeric"><b>dias</b></div></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Serviços -->
+      <section class="etapa" id="e-serv">
+        <div class="etapa-h"><span class="num">3</span><h2>Mão de obra<small>Os serviços que você vai fazer.</small></h2><svg class="ic seta" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></div>
+        <div class="etapa-b">
+          <div class="add"><select id="selServ"></select><button class="btn btn-p" data-add="serv">+ Adicionar</button></div>
+          <div id="listaServ"></div>
+          <p class="dica">Escolha na lista ou use “Item livre”. <b>O preço que você digitar fica memorizado</b> para os próximos orçamentos. Para cobrar por hora, escolha “Mão de obra por hora”.</p>
+        </div>
+      </section>
+
+      <!-- 4. Materiais -->
+      <section class="etapa" id="e-mat">
+        <div class="etapa-h"><span class="num">4</span><h2>Materiais<small>Fios, tomadas, disjuntores e o que mais for usar.</small></h2><svg class="ic seta" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></div>
+        <div class="etapa-b">
+          <label class="toggle"><input type="checkbox" data-k="matCliente"><span><b>O cliente vai comprar os materiais</b><br><small style="color:var(--muted)">A lista aparece no orçamento, mas sem preço e fora do total.</small></span></label>
+          <div class="add"><select id="selMat"></select><button class="btn btn-p" data-add="mat">+ Adicionar</button></div>
+          <div id="listaMat"></div>
+          <p class="dica">Use o preço que você paga na loja. Se quiser ganhar algo sobre o material, use a margem na etapa 5.</p>
+        </div>
+      </section>
+
+      <!-- 5. Ajustes -->
+      <section class="etapa" id="e-aj">
+        <div class="etapa-h"><span class="num">5</span><h2>Ajustes no valor<small>Deslocamento, imprevistos e desconto.</small></h2><svg class="ic seta" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></div>
+        <div class="etapa-b grid">
+          <div class="grid g2">
+            <label class="campo"><span>Deslocamento / visita</span><div class="pre"><b>R$</b><input data-k="desloc" data-n inputmode="decimal" placeholder="0,00"></div></label>
+            <label class="campo"><span>Outros custos <em>(caçamba, aluguel de ferramenta…)</em></span><div class="pre"><b>R$</b><input data-k="outros" data-n inputmode="decimal" placeholder="0,00"></div></label>
+            <label class="campo"><span>Margem para imprevistos</span><div class="pos"><input data-k="margem" data-n inputmode="decimal" placeholder="0"><b>%</b></div></label>
+            <label class="campo"><span>Desconto para o cliente</span><div class="pos"><input data-k="desconto" data-n inputmode="decimal" placeholder="0"><b>%</b></div></label>
+          </div>
+          <p class="dica" style="margin:0">A <b>margem</b> cobre imprevistos e é <b>embutida nos preços</b> do orçamento do cliente (ele não vê a palavra “margem”). Algo entre 10% e 20% é comum.</p>
+        </div>
+      </section>
+
+      <!-- 6. Pagamento -->
+      <section class="etapa" id="e-pag">
+        <div class="etapa-h"><span class="num">6</span><h2>Pagamento e condições<small>Aparece no rodapé do orçamento.</small></h2><svg class="ic seta" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></div>
+        <div class="etapa-b grid">
+          <div><span style="display:block;font-size:12.5px;font-weight:700;color:var(--bdark);margin-bottom:6px">Formas de pagamento aceitas</span>
+            <div class="formas" id="formas"></div></div>
+          <div class="grid g3">
+            <label class="campo"><span>Entrada</span><div class="pos"><input data-k="entrada" data-n inputmode="decimal" placeholder="0"><b>%</b></div></label>
+            <label class="campo"><span>Prazo para executar</span><input data-k="prazo" placeholder="Ex.: 2 dias úteis"></label>
+            <label class="campo"><span>Garantia do serviço</span><div class="pos"><input data-k="garantia" data-n inputmode="numeric"><b>dias</b></div></label>
+          </div>
+          <label class="campo"><span>Observações <em>(opcional)</em></span><textarea data-k="obs" placeholder="Ex.: Não inclui reparo de alvenaria e pintura."></textarea></label>
+        </div>
+      </section>
+    </div>
+
+    <!-- resumo -->
+    <aside class="resumo-col">
+      <div class="resumo" id="resumo">
+        <h3>Resumo do orçamento</h3>
+        <div class="rl"><span>Mão de obra</span><b id="r-serv">R$ 0,00</b></div>
+        <div class="rl"><span id="r-mat-l">Materiais</span><b id="r-mat">R$ 0,00</b></div>
+        <div class="rl"><span>Deslocamento + outros</span><b id="r-desl">R$ 0,00</b></div>
+        <div class="rl"><span>Margem (imprevistos)</span><b id="r-marg">R$ 0,00</b></div>
+        <div class="rl neg"><span>Desconto</span><b id="r-desc">- R$ 0,00</b></div>
+        <div class="total"><small>Valor final para o cliente</small><strong id="r-total">R$ 0,00</strong></div>
+        <div class="lucro">Sem contar materiais, você recebe <b id="r-lucro">R$ 0,00</b>.</div>
+        <div class="acoes">
+          <button class="btn btn-a btn-bloco" data-acao="pdf">Gerar PDF do orçamento</button>
+          <button class="btn btn-g btn-bloco" data-acao="whats">Enviar resumo no WhatsApp</button>
+          <button class="btn btn-s btn-bloco" data-acao="salvar" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.25)">Salvar orçamento</button>
+          <button class="btn btn-s btn-bloco" data-acao="novo" style="background:transparent;color:#9DB5E6;border-color:rgba(255,255,255,.15)">Começar um novo</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<!-- ================= TELA 2: ORÇAMENTO DO CLIENTE ================= -->
+<main id="tela-doc" hidden>
+  <div class="prev-acoes">
+    <button class="btn btn-a" data-acao="imprimir">Salvar em PDF / Imprimir</button>
+    <button class="btn btn-g" data-acao="whats">Enviar no WhatsApp</button>
+    <button class="btn btn-s" data-aba="form">Voltar e editar</button>
+  </div>
+  <div class="intro" style="margin-bottom:14px"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5v.01"/></svg>
+    <span>Na janela que abrir, escolha <b>“Salvar como PDF”</b> como impressora. No celular: menu do navegador › Compartilhar › Imprimir › Salvar PDF. Depois é só enviar o arquivo para o cliente.</span></div>
+  <div class="prev-wrap" id="prevWrap"><div id="doc"></div></div>
+</main>
+
+<!-- ================= TELA 3: SALVOS ================= -->
+<main id="tela-salvos" hidden>
+  <div class="intro" style="margin-bottom:14px"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5v.01"/></svg>
+    <span>Orçamentos salvos neste aparelho. Toque em um para abrir e editar, ou duplique para aproveitar como modelo.</span></div>
+  <div id="listaSalvos"></div>
+</main>
+
+<div class="barra" id="barra">
+  <div><small>Valor final</small><strong id="b-total">R$ 0,00</strong></div>
+  <button class="btn btn-a" data-acao="pdf">Gerar PDF</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ----------------------------------------------------------
+   Listas prontas (o usuário define os preços; eles ficam
+   memorizados no aparelho na primeira vez que forem digitados)
+   ---------------------------------------------------------- */
+const SERVICOS = [
+  ["Visita técnica / diagnóstico","un"],["Mão de obra por hora","h"],
+  ["Instalação de tomada","un"],["Instalação de interruptor","un"],["Instalação de ponto de luz","un"],
+  ["Instalação de luminária / plafon","un"],["Instalação de lustre","un"],["Instalação de ventilador de teto","un"],
+  ["Instalação de chuveiro elétrico","un"],["Troca de resistência de chuveiro","un"],
+  ["Troca de disjuntor","un"],["Instalação de DR","un"],["Instalação de DPS","un"],
+  ["Montagem de quadro de distribuição","un"],["Ponto para ar-condicionado","un"],
+  ["Passagem de fiação","m"],["Instalação de eletroduto","m"],["Instalação de caixa de passagem","un"]
+];
+const MATERIAIS = [
+  ["Cabo flexível 1,5 mm²","m"],["Cabo flexível 2,5 mm²","m"],["Cabo flexível 4 mm²","m"],["Cabo flexível 6 mm²","m"],["Cabo flexível 10 mm²","m"],
+  ["Tomada 2P+T 10 A","un"],["Tomada 2P+T 20 A","un"],["Interruptor simples","un"],["Interruptor paralelo","un"],["Placa / espelho 4x2","un"],
+  ["Disjuntor monopolar 10 A","un"],["Disjuntor monopolar 16 A","un"],["Disjuntor monopolar 20 A","un"],["Disjuntor monopolar 25 A","un"],
+  ["Disjuntor bipolar 32 A","un"],["Disjuntor bipolar 40 A","un"],["DR 30 mA","un"],["DPS","un"],["Quadro de distribuição","un"],
+  ["Eletroduto corrugado 3/4\"","m"],["Caixa 4x2","un"],["Caixa 4x4","un"],["Conector de emenda","un"],["Fita isolante","un"],
+  ["Lâmpada LED","un"],["Plafon / luminária LED","un"],["Abraçadeiras e buchas","un"]
+];
+const FORMAS = ["Pix","Dinheiro","Cartão de débito","Cartão de crédito","Transferência"];
+
+/* ----------------------------------------------------------
+   Armazenamento local (funciona offline)
+   ---------------------------------------------------------- */
+const store = {
+  get(k,d){ try{ const v=localStorage.getItem("orc:"+k); return v?JSON.parse(v):d; }catch(e){ return d; } },
+  set(k,v){ try{ localStorage.setItem("orc:"+k,JSON.stringify(v)); return true; }catch(e){ return false; } }
+};
+const hoje = () => new Date().toISOString().slice(0,10);
+const novoEstado = (prest, num) => ({
+  prest: prest || {nome:"",tel:"",doc:"",cidade:"",logo:""},
+  cli:{nome:"",tel:"",end:"",servico:""},
+  num: num || "001", data: hoje(), validade: 15,
+  serv:[], mat:[], matCliente:false,
+  desloc:0, outros:0, margem:0, desconto:0,
+  formas:["Pix","Dinheiro"], entrada:0, prazo:"", garantia:90, obs:""
+});
+let S = store.get("atual", null) || novoEstado();
+let precos = store.get("precos", {});
+let salvos = store.get("salvos", []);
+
+/* ----------------------------------------------------------
+   Números e dinheiro
+   ---------------------------------------------------------- */
+const num = v => { let s=String(v??"").replace(/\s|R\$/g,""); if(s.includes(",")) s=s.replace(/\./g,"").replace(",","."); const n=parseFloat(s); return isFinite(n)?n:0; };
+const brl = n => n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const show = n => n ? String(+n.toFixed(2)).replace(".",",") : "";
+const r2 = n => Math.round(n*100)/100;
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const dataBR = d => d ? d.split("-").reverse().join("/") : "";
+const getK = (o,k) => k.split(".").reduce((a,p)=>a?.[p],o);
+const setK = (o,k,v) => { const p=k.split("."); const u=p.pop(); p.reduce((a,x)=>a[x],o)[u]=v; };
+
+/* ----------------------------------------------------------
+   Cálculo. A margem é embutida nos preços vistos pelo cliente.
+   ---------------------------------------------------------- */
+function calcular(){
+  const f = 1 + num(S.margem)/100;
+  const linhas = (arr, cobra) => arr.map(i => {
+    const custo = r2(num(i.qtd) * num(i.preco));
+    const unitCli = r2(num(i.preco) * f);
+    return { ...i, custo, unitCli, totCli: cobra ? r2(unitCli * num(i.qtd)) : 0 };
+  });
+  const serv = linhas(S.serv, true);
+  const mat = linhas(S.mat, !S.matCliente);
+  const custoServ = serv.reduce((a,i)=>a+i.custo,0);
+  const custoMat = S.matCliente ? 0 : mat.reduce((a,i)=>a+i.custo,0);
+  const cliServ = serv.reduce((a,i)=>a+i.totCli,0);
+  const cliMat = mat.reduce((a,i)=>a+i.totCli,0);
+  const extras = num(S.desloc) + num(S.outros);
+  const margem = r2(cliServ + cliMat - custoServ - custoMat);
+  const subtotal = cliServ + cliMat + extras;
+  const desconto = r2(subtotal * num(S.desconto)/100);
+  const total = r2(subtotal - desconto);
+  return { serv, mat, custoServ, custoMat, cliServ, cliMat, extras, margem, subtotal, desconto, total,
+           recebe: r2(total - custoMat) };
+}
+
+/* ----------------------------------------------------------
+   Formulário
+   ---------------------------------------------------------- */
+function preencherCampos(){
+  document.querySelectorAll("[data-k]").forEach(el => {
+    const v = getK(S, el.dataset.k);
+    if (el.type === "checkbox") el.checked = !!v;
+    else el.value = el.hasAttribute("data-n") ? show(num(v)) : (v ?? "");
+  });
+  document.getElementById("formas").innerHTML = FORMAS.map(f =>
+    `<label><input type="checkbox" data-forma="${f}" ${S.formas.includes(f)?"checked":""}>${f}</label>`).join("");
+  mostrarLogo();
+}
+
+function opcoes(lista){
+  return `<option value="">Escolha da lista…</option><option value="__livre">✎ Item livre (digitar)</option>` +
+    lista.map(([n,u])=>`<option value="${esc(n)}|${u}">${esc(n)} (${u})</option>`).join("");
+}
+
+function linhaHTML(tipo, i, idx){
+  return `<div class="linha" data-tipo="${tipo}" data-i="${idx}">
+    <label class="campo desc"><span>Descrição</span><input data-f="desc" value="${esc(i.desc)}" placeholder="Descreva o item"></label>
+    <div class="nums">
+      <label class="campo"><span>Unid.</span><select class="un" data-f="un">${["un","m","h","cx","pç","vb"].map(u=>`<option ${u===i.un?"selected":""}>${u}</option>`).join("")}</select></label>
+      <label class="campo"><span>Qtd.</span><input data-f="qtd" inputmode="decimal" value="${show(num(i.qtd))}" placeholder="0"></label>
+      <label class="campo"><span>Preço unit.</span><div class="pre"><b>R$</b><input data-f="preco" inputmode="decimal" value="${show(num(i.preco))}" placeholder="0,00"></div></label>
+      <div class="sub"><small>Subtotal</small><span data-sub>${brl(r2(num(i.qtd)*num(i.preco)))}</span></div>
+    </div>
+    <button class="x" data-del aria-label="Remover"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M9.5 7V4.5h5V7M6 7l1 13.5h10L18 7"/></svg></button>
+  </div>`;
+}
+
+function desenharListas(){
+  const vazio = t => `<div class="vazio">${t}</div>`;
+  document.getElementById("listaServ").innerHTML = S.serv.length
+    ? S.serv.map((i,k)=>linhaHTML("serv",i,k)).join("")
+    : vazio("Nenhum serviço ainda. Escolha um na lista acima.");
+  document.getElementById("listaMat").innerHTML = S.mat.length
+    ? S.mat.map((i,k)=>linhaHTML("mat",i,k)).join("")
+    : vazio("Nenhum material ainda. Escolha na lista acima.");
+}
+
+function atualizar(){
+  const c = calcular();
+  const set = (id,t) => document.getElementById(id).textContent = t;
+  set("r-serv", brl(c.custoServ));
+  set("r-mat", S.matCliente ? "por conta do cliente" : brl(c.custoMat));
+  set("r-desl", brl(c.extras));
+  set("r-marg", brl(c.margem));
+  set("r-desc", "- " + brl(c.desconto));
+  set("r-total", brl(c.total));
+  set("b-total", brl(c.total));
+  set("r-lucro", brl(c.recebe));
+  document.querySelectorAll(".linha").forEach(l => {
+    const i = S[l.dataset.tipo][l.dataset.i];
+    if (i) l.querySelector("[data-sub]").textContent = brl(r2(num(i.qtd)*num(i.preco)));
+  });
+  store.set("atual", S);
+}
+
+function adicionar(tipo){
+  const sel = document.getElementById(tipo==="serv"?"selServ":"selMat");
+  if (!sel.value) { toast("Escolha um item na lista primeiro."); sel.focus(); return; }
+  let desc="", un="un";
+  if (sel.value !== "__livre") [desc,un] = sel.value.split("|");
+  S[tipo].push({ desc, un, qtd: 1, preco: precos[desc] || 0 });
+  sel.value = "";
+  desenharListas(); atualizar();
+  const linhas = document.querySelectorAll(`.linha[data-tipo="${tipo}"]`);
+  const ult = linhas[linhas.length-1];
+  (ult.querySelector(desc ? (precos[desc] ? '[data-f="qtd"]' : '[data-f="preco"]') : '[data-f="desc"]')).focus();
+}
+
+/* ----------------------------------------------------------
+   Logo
+   ---------------------------------------------------------- */
+function mostrarLogo(){
+  const p = document.getElementById("logoPrev");
+  p.innerHTML = S.prest.logo ? `<img src="${S.prest.logo}" alt="">` : "sua<br>logo";
+  document.getElementById("logoRem").hidden = !S.prest.logo;
+}
+document.getElementById("logoFile").addEventListener("change", e => {
+  const file = e.target.files[0]; if (!file) return;
+  const img = new Image(); const rd = new FileReader();
+  rd.onload = () => { img.src = rd.result; };
+  img.onload = () => {
+    const max = 320, k = Math.min(1, max/Math.max(img.width,img.height));
+    const cv = document.createElement("canvas"); cv.width = img.width*k; cv.height = img.height*k;
+    cv.getContext("2d").drawImage(img,0,0,cv.width,cv.height);
+    S.prest.logo = cv.toDataURL("image/png"); mostrarLogo(); atualizar();
+  };
+  rd.readAsDataURL(file);
+});
+document.getElementById("logoRem").onclick = () => { S.prest.logo = ""; mostrarLogo(); atualizar(); };
+
+/* ----------------------------------------------------------
+   Documento do cliente
+   ---------------------------------------------------------- */
+function documento(){
+  const c = calcular(), p = S.prest, cl = S.cli;
+  const venc = (() => { if(!S.data) return ""; const d=new Date(S.data+"T12:00"); d.setDate(d.getDate()+num(S.validade)); return d.toLocaleDateString("pt-BR"); })();
+  const tab = (itens, comPreco) => `
+    <table class="d-t"><thead><tr><th>Descrição</th><th class="c">Qtd.</th>${comPreco?'<th class="r">Valor unit.</th><th class="r">Total</th>':""}</tr></thead>
+    <tbody>${itens.map(i=>`<tr><td>${esc(i.desc||"Item")}</td><td class="c">${show(num(i.qtd))||0} ${esc(i.un)}</td>${comPreco?`<td class="r">${brl(i.unitCli)}</td><td class="r">${brl(i.totCli)}</td>`:""}</tr>`).join("")}</tbody></table>`;
+  const entrada = num(S.entrada) ? r2(c.total*num(S.entrada)/100) : 0;
+  const raio = '<svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>';
+  return `
+  <div class="d-top">
+    <div class="d-prest">${p.logo?`<img src="${p.logo}" alt="">`:`<span class="ph">${raio}</span>`}
+      <div><strong>${esc(p.nome||"Seu nome ou empresa")}</strong>
+      ${p.tel?`<span>WhatsApp: ${esc(p.tel)}</span>`:""}${p.doc?`<span>CPF/CNPJ: ${esc(p.doc)}</span>`:""}${p.cidade?`<span>${esc(p.cidade)}</span>`:""}</div></div>
+    <div class="d-num"><b>ORÇAMENTO</b><span>Nº <strong>${esc(S.num)}</strong></span><span>Data: <strong>${dataBR(S.data)}</strong></span>${venc?`<span>Válido até: <strong>${venc}</strong></span>`:""}</div>
+  </div>
+  <div class="d-cli"><h4>Cliente</h4>
+    <div><span>Nome</span>${esc(cl.nome)||"—"}</div><div><span>Telefone</span>${esc(cl.tel)||"—"}</div>
+    <div style="grid-column:1/-1"><span>Endereço da obra</span>${esc(cl.end)||"—"}</div>
+    ${cl.servico?`<div style="grid-column:1/-1"><span>Serviço</span>${esc(cl.servico)}</div>`:""}</div>
+  ${c.serv.length?`<div class="d-sec">Mão de obra</div>${tab(c.serv,true)}`:""}
+  ${c.mat.length?`<div class="d-sec">${S.matCliente?"Materiais (comprados pelo cliente)":"Materiais"}</div>${tab(c.mat,!S.matCliente)}`:""}
+  <div class="d-fim">
+    <div class="d-cond">
+      ${S.formas.length?`<div><b>Formas de pagamento:</b> ${S.formas.join(", ")}</div>`:""}
+      ${entrada?`<div><b>Entrada (${show(num(S.entrada))}%):</b> ${brl(entrada)} · <b>restante:</b> ${brl(r2(c.total-entrada))} na conclusão</div>`:""}
+      ${S.prazo?`<div><b>Prazo de execução:</b> ${esc(S.prazo)}</div>`:""}
+      ${num(S.garantia)?`<div><b>Garantia do serviço:</b> ${show(num(S.garantia))} dias</div>`:""}
+      ${S.matCliente?`<div><b>Materiais:</b> por conta do cliente</div>`:""}
+    </div>
+    <div class="d-tot">
+      ${c.cliServ?`<div class="l"><span>Mão de obra</span><b>${brl(c.cliServ)}</b></div>`:""}
+      ${c.cliMat?`<div class="l"><span>Materiais</span><b>${brl(c.cliMat)}</b></div>`:""}
+      ${num(S.desloc)?`<div class="l"><span>Deslocamento</span><b>${brl(num(S.desloc))}</b></div>`:""}
+      ${num(S.outros)?`<div class="l"><span>Outros custos</span><b>${brl(num(S.outros))}</b></div>`:""}
+      ${c.desconto?`<div class="l neg"><span>Desconto (${show(num(S.desconto))}%)</span><b>- ${brl(c.desconto)}</b></div>`:""}
+      <div class="t"><span>Valor total</span><strong>${brl(c.total)}</strong></div>
+    </div>
+  </div>
+  ${S.obs?`<div class="d-obs"><b>Observações:</b> ${esc(S.obs)}</div>`:""}
+  <div class="d-ass"><div>${esc(p.nome||"Prestador de serviço")}</div><div>De acordo — ${esc(cl.nome||"Cliente")}</div></div>
+  `;
+}
+
+function ajustarPrevia(){
+  const doc = document.getElementById("doc"), wrap = document.getElementById("prevWrap");
+  doc.style.transform = "";
+  const k = Math.min(1, (wrap.clientWidth) / doc.offsetWidth);
+  doc.style.transform = k < 1 ? `scale(${k})` : "";
+  wrap.style.height = k < 1 ? (doc.offsetHeight*k + 20) + "px" : "";
+}
+
+/* ----------------------------------------------------------
+   WhatsApp e salvos
+   ---------------------------------------------------------- */
+function textoResumo(){
+  const c = calcular();
+  let t = `*Orçamento nº ${S.num}* — ${S.prest.nome||""}\nCliente: ${S.cli.nome||"-"}\n`;
+  if (S.cli.servico) t += `Serviço: ${S.cli.servico}\n`;
+  if (c.serv.length) t += `\n*Mão de obra*\n` + c.serv.map(i=>`• ${i.desc} (${show(num(i.qtd))} ${i.un}): ${brl(i.totCli)}`).join("\n") + "\n";
+  if (c.mat.length) t += `\n*Materiais${S.matCliente?" (por conta do cliente)":""}*\n` + c.mat.map(i=>`• ${i.desc} (${show(num(i.qtd))} ${i.un})${S.matCliente?"":": "+brl(i.totCli)}`).join("\n") + "\n";
+  if (c.extras) t += `\nDeslocamento/outros: ${brl(c.extras)}`;
+  if (c.desconto) t += `\nDesconto: - ${brl(c.desconto)}`;
+  t += `\n\n*VALOR TOTAL: ${brl(c.total)}*`;
+  if (S.formas.length) t += `\nPagamento: ${S.formas.join(", ")}`;
+  if (S.prazo) t += `\nPrazo: ${S.prazo}`;
+  if (num(S.garantia)) t += `\nGarantia: ${show(num(S.garantia))} dias`;
+  return t;
+}
+
+function salvar(silencioso){
+  const c = calcular();
+  const reg = { id: S.num + "|" + (S.cli.nome||""), em: Date.now(), total: c.total, dados: JSON.parse(JSON.stringify(S)) };
+  salvos = [reg, ...salvos.filter(s => s.id !== reg.id)];
+  if (!store.set("salvos", salvos)) { toast("Não foi possível salvar neste navegador."); return; }
+  if (!silencioso) toast("Orçamento salvo neste aparelho.");
+}
+
+function desenharSalvos(){
+  const box = document.getElementById("listaSalvos");
+  box.innerHTML = salvos.length ? salvos.map((s,k)=>`
+    <div class="salvo">
+      <div><strong>Nº ${esc(s.dados.num)} · ${esc(s.dados.cli.nome||"Sem nome")}</strong><small>${dataBR(s.dados.data)}${s.dados.cli.servico?" · "+esc(s.dados.cli.servico):""}</small></div>
+      <span class="v">${brl(s.total)}</span>
+      <button class="mini" data-abrir="${k}" title="Abrir"><svg class="ic" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>
+      <button class="mini" data-dup="${k}" title="Duplicar"><svg class="ic" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg></button>
+      <button class="mini r" data-apagar="${k}" title="Apagar"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M9.5 7V4.5h5V7M6 7l1 13.5h10L18 7"/></svg></button>
+    </div>`).join("") : `<div class="vazio">Nenhum orçamento salvo ainda. Use “Salvar orçamento” no resumo.</div>`;
+}
+
+const proxNum = () => {
+  const maior = Math.max(num(S.num), ...salvos.map(s=>num(s.dados.num)), 0);
+  return String(maior+1).padStart(3,"0");
+};
+
+/* ----------------------------------------------------------
+   Navegação e eventos
+   ---------------------------------------------------------- */
+function aba(nome){
+  document.querySelectorAll(".abas button").forEach(b=>b.classList.toggle("on", b.dataset.aba===nome));
+  document.getElementById("tela-form").hidden = nome!=="form";
+  document.getElementById("tela-doc").hidden = nome!=="doc";
+  document.getElementById("tela-salvos").hidden = nome!=="salvos";
+  document.getElementById("barra").style.display = nome==="form" ? "" : "none";
+  if (nome==="doc") { document.getElementById("doc").innerHTML = documento(); requestAnimationFrame(ajustarPrevia); }
+  if (nome==="salvos") desenharSalvos();
+  window.scrollTo(0,0);
+}
+
+let tt;
+function toast(m){ const t=document.getElementById("toast"); t.textContent=m; t.classList.add("ver"); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove("ver"),2600); }
+
+document.addEventListener("input", e => {
+  const el = e.target;
+  if (el.dataset.k) {
+    setK(S, el.dataset.k, el.type==="checkbox" ? el.checked : (el.hasAttribute("data-n") ? num(el.value) : el.value));
+    if (el.dataset.k==="matCliente") document.getElementById("r-mat-l").textContent = "Materiais";
+    atualizar(); return;
+  }
+  const l = el.closest(".linha");
+  if (l && el.dataset.f) {
+    const i = S[l.dataset.tipo][l.dataset.i];
+    i[el.dataset.f] = (el.dataset.f==="qtd"||el.dataset.f==="preco") ? num(el.value) : el.value;
+    if (el.dataset.f==="preco" && i.desc) { precos[i.desc] = num(el.value); store.set("precos", precos); }
+    atualizar(); return;
+  }
+  if (el.dataset.forma) {
+    S.formas = FORMAS.filter(f => document.querySelector(`[data-forma="${f}"]`).checked);
+    atualizar();
+  }
+});
+document.addEventListener("change", e => { if (e.target.matches('[data-k],[data-f="un"],[data-forma]')) e.target.dispatchEvent(new Event("input",{bubbles:true})); });
+
+document.addEventListener("click", e => {
+  const t = e.target;
+  const h = t.closest(".etapa-h"); if (h) { h.parentElement.classList.toggle("fechada"); return; }
+  const ab = t.closest("[data-aba]"); if (ab) { aba(ab.dataset.aba); return; }
+  const add = t.closest("[data-add]"); if (add) { adicionar(add.dataset.add); return; }
+  const del = t.closest("[data-del]");
+  if (del) { const l = del.closest(".linha"); S[l.dataset.tipo].splice(+l.dataset.i,1); desenharListas(); atualizar(); return; }
+  const ac = t.closest("[data-acao]");
+  if (ac) {
+    const a = ac.dataset.acao;
+    if (a==="pdf") { salvar(true); aba("doc"); toast("Confira e toque em “Salvar em PDF / Imprimir”."); }
+    if (a==="imprimir") { salvar(true); document.getElementById("doc").style.transform=""; setTimeout(()=>{ window.print(); ajustarPrevia(); },50); }
+    if (a==="whats") {
+      const tel = (S.cli.tel||"").replace(/\D/g,"");
+      const url = "https://wa.me/" + (tel ? (tel.length<=11 ? "55"+tel : tel) : "") + "?text=" + encodeURIComponent(textoResumo());
+      window.open(url, "_blank");
+    }
+    if (a==="salvar") salvar();
+    if (a==="novo") {
+      if (!confirm("Começar um novo orçamento? O atual será salvo na lista de orçamentos salvos.")) return;
+      salvar(true); S = novoEstado(S.prest, proxNum()); preencherCampos(); desenharListas(); atualizar(); toast("Novo orçamento nº " + S.num);
+    }
+    return;
+  }
+  const abr = t.closest("[data-abrir]");
+  if (abr) { S = JSON.parse(JSON.stringify(salvos[+abr.dataset.abrir].dados)); preencherCampos(); desenharListas(); atualizar(); aba("form"); toast("Orçamento aberto para edição."); return; }
+  const dup = t.closest("[data-dup]");
+  if (dup) { const d = JSON.parse(JSON.stringify(salvos[+dup.dataset.dup].dados)); d.num = proxNum(); d.data = hoje(); d.cli = {nome:"",tel:"",end:"",servico:d.cli.servico}; S = d; preencherCampos(); desenharListas(); atualizar(); aba("form"); toast("Cópia criada: nº " + S.num); return; }
+  const apg = t.closest("[data-apagar]");
+  if (apg) { if (!confirm("Apagar este orçamento salvo?")) return; salvos.splice(+apg.dataset.apagar,1); store.set("salvos", salvos); desenharSalvos(); }
+});
+window.addEventListener("resize", () => { if (!document.getElementById("tela-doc").hidden) ajustarPrevia(); });
+window.addEventListener("afterprint", ajustarPrevia);
+
+/* Início */
+document.getElementById("selServ").innerHTML = opcoes(SERVICOS);
+document.getElementById("selMat").innerHTML = opcoes(MATERIAIS);
+preencherCampos(); desenharListas(); atualizar();
+</script>
+</body>
+</html>
