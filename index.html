@@ -8,8 +8,8 @@
   <meta name="theme-color" content="#010E1E">
 
   <!-- TROCAR: ícone da aba / atalho do celular (coloque o arquivo na pasta e ajuste o caminho) -->
-  <!-- <link rel="icon" href="img/icone.png"> -->
-  <!-- <link rel="apple-touch-icon" href="img/icone.png"> -->
+  <!-- <link rel="icon" href="icone.png"> -->
+  <!-- <link rel="apple-touch-icon" href="icone.png"> -->
 
   <!-- Fontes (sem internet o app usa as fontes do sistema, sem quebrar nada) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -756,7 +756,7 @@ h1, h2, h3 { margin: 0; }
 
       <a class="marca" href="#/inicio" aria-label="Início">
         <!-- TROCAR: logo oficial (NÃO IDENTIFICADO). Substitua o <span class="marca-logo"> por:
-             <img class="marca-img" src="img/logo.png" alt="Manual Prático do Eletricista Residencial"> -->
+             <img class="marca-img" src="logo.png" alt="Manual Prático do Eletricista Residencial"> -->
         <span class="marca-logo">
           <svg class="ic" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>
         </span>
@@ -817,21 +817,21 @@ h1, h2, h3 { margin: 0; }
 
   <noscript><p style="padding:24px;font-family:sans-serif">Ative o JavaScript do navegador para abrir o manual.</p></noscript>
 
-  <!-- TROCAR: banner principal. Para usar outro arquivo, troque o valor abaixo por um caminho, ex.: window.BANNER_PRINCIPAL = "img/00-banner-principal.webp"; -->
-<script>window.BANNER_PRINCIPAL = "img/00-banner-principal.webp";</script>
+  <!-- TROCAR: banner principal. Para usar outro arquivo, troque o valor abaixo por um caminho, ex.: window.BANNER_PRINCIPAL = "00-banner-principal.webp"; -->
+<script>window.BANNER_PRINCIPAL = "00-banner-principal.webp";</script>
 <!-- TROCAR: capas quadradas dos temas (1254 x 1254 px). Arquivos na pasta img. -->
 <script>window.IMG_TEMAS = {
-/* 01-introducao-eletrica-residencial.webp */ "introducao": "img/01-introducao-eletrica-residencial.webp",
-/* 02-manual-eletricista-residencial.webp */ "manual-eletricista": "img/02-manual-eletricista-residencial.webp",
-/* 03-planilha-orcamento-eletrico.webp */ "planilha-orcamento": "img/03-planilha-orcamento-eletrico.webp",
-/* 04-lista-materiais-eletricos.webp */ "lista-materiais": "img/04-lista-materiais-eletricos.webp",
-/* 05-guia-quanto-cobrar.webp */ "quanto-cobrar": "img/05-guia-quanto-cobrar.webp",
-/* 06-seguranca-verificacao-instalacao.webp */ "manual-seguranca": "img/06-seguranca-verificacao-instalacao.webp",
-/* 07-apostila-instalacao-eletrica.webp */ "apostila-instalacao": "img/07-apostila-instalacao-eletrica.webp",
-/* 08-curso-eletrodomestico-residencial.webp */ "curso-eletrodomestico": "img/08-curso-eletrodomestico-residencial.webp",
-/* 09-projetos-residenciais-iniciantes.webp */ "projetos-iniciantes": "img/09-projetos-residenciais-iniciantes.webp",
-/* 10-projeto-eletrico-passo-a-passo.webp */ "projeto-passo-a-passo": "img/10-projeto-eletrico-passo-a-passo.webp",
-/* 11-entendendo-projeto-eletrica.webp */ "entendendo-projeto": "img/11-entendendo-projeto-eletrica.webp",
+/* 01-introducao-eletrica-residencial.webp */ "introducao": "01-introducao-eletrica-residencial.webp",
+/* 02-manual-eletricista-residencial.webp */ "manual-eletricista": "02-manual-eletricista-residencial.webp",
+/* 03-planilha-orcamento-eletrico.webp */ "planilha-orcamento": "03-planilha-orcamento-eletrico.webp",
+/* 04-lista-materiais-eletricos.webp */ "lista-materiais": "04-lista-materiais-eletricos.webp",
+/* 05-guia-quanto-cobrar.webp */ "quanto-cobrar": "05-guia-quanto-cobrar.webp",
+/* 06-seguranca-verificacao-instalacao.webp */ "manual-seguranca": "06-seguranca-verificacao-instalacao.webp",
+/* 07-apostila-instalacao-eletrica.webp */ "apostila-instalacao": "07-apostila-instalacao-eletrica.webp",
+/* 08-curso-eletrodomestico-residencial.webp */ "curso-eletrodomestico": "08-curso-eletrodomestico-residencial.webp",
+/* 09-projetos-residenciais-iniciantes.webp */ "projetos-iniciantes": "09-projetos-residenciais-iniciantes.webp",
+/* 10-projeto-eletrico-passo-a-passo.webp */ "projeto-passo-a-passo": "10-projeto-eletrico-passo-a-passo.webp",
+/* 11-entendendo-projeto-eletrica.webp */ "entendendo-projeto": "11-entendendo-projeto-eletrica.webp",
 };</script>
 <script>
 /* ==========================================================
@@ -853,7 +853,7 @@ const CONFIG = {
   // Com false, a mensagem "Acesso liberado!" não aparece.
   acessoConfirmado: true,
 
-  // TROCAR: imagem da capa do produto (ex.: "img/capa-manual.png"). Vazio = capa ilustrada provisória.
+  // TROCAR: imagem da capa do produto (ex.: "capa-manual.png"). Vazio = capa ilustrada provisória.
   capaProduto: "",
 
   // TROCAR: canal de suporte. Ex.: { texto: "Falar no WhatsApp", link: "https://wa.me/55..." }
@@ -872,7 +872,7 @@ const CONFIG = {
        Enquanto estiver vazio, o botão avisa:
        "Este arquivo ainda não está disponível para download."
    Opcionais:
-     capa:    "img/arquivo.png"  (TROCAR — imagem real; vazio = capa ilustrada)
+     capa:    "arquivo.png"  (TROCAR — imagem real; vazio = capa ilustrada)
      formato: "PDF", "XLSX"...   (só aparece se preenchido)
    ---------------------------------------------------------- */
 const TEMAS = [
@@ -880,68 +880,68 @@ const TEMAS = [
     titulo: "Introdução à Elétrica Residencial",
     desc: "O ponto de partida para entender os conceitos básicos da elétrica residencial.",
     capa: "", formato: "PDF",
-    link: "materiais/01-introducao-eletrica-residencial.pdf" /* arquivo na pasta materiais, ao lado do app */ },
+    link: "01-introducao-eletrica-residencial.pdf" /* arquivo na pasta materiais, ao lado do app */ },
 
   { id: "manual-eletricista", icone: "livro",
     titulo: "Manual do Eletricista Residencial",
     desc: "Manual de consulta com as principais referências da elétrica residencial.",
     capa: "", formato: "PDF",
-    link: "materiais/02-manual-eletricista-residencial.pdf" /* arquivo na pasta materiais, ao lado do app */ },
+    link: "02-manual-eletricista-residencial.pdf" /* arquivo na pasta materiais, ao lado do app */ },
 
   { id: "planilha-orcamento", icone: "planilha",
     titulo: "Planilha de Orçamento Elétrico",
     desc: "Calcula materiais, mão de obra, margem de lucro e preço final com muito mais praticidade.",
     capa: "", formato: "Planilha interativa (abre no navegador, funciona offline)",
-    link: "materiais/03-planilha-orcamento-eletrico.html" /* arquivo na pasta materiais, ao lado do app */ },
+    link: "03-planilha-orcamento-eletrico.html" /* arquivo na pasta materiais, ao lado do app */ },
 
   { id: "lista-materiais", icone: "prancheta",
     titulo: "Lista de Materiais Elétricos",
     desc: "Modelos prontos com os principais materiais usados em instalações, reformas e manutenções residenciais.",
     capa: "", formato: "PDF",
-    link: "materiais/04-lista-materiais-eletricos.pdf" /* arquivo na pasta materiais, ao lado do app */ },
+    link: "04-lista-materiais-eletricos.pdf" /* arquivo na pasta materiais, ao lado do app */ },
 
   { id: "quanto-cobrar", icone: "dinheiro",
     titulo: "Guia: Quanto Cobrar por Serviços Elétricos",
     desc: "Aprenda a organizar seus preços pra não cobrar barato demais e não perder dinheiro em cada serviço.",
     capa: "", formato: "PDF",
-    link: "materiais/05-guia-quanto-cobrar.pdf" /* arquivo na pasta materiais, ao lado do app */ },
+    link: "05-guia-quanto-cobrar.pdf" /* arquivo na pasta materiais, ao lado do app */ },
 
   { id: "manual-seguranca", icone: "escudo",
     titulo: "Manual de Segurança e Lista de Verificação de Instalação",
     desc: "Um guia prático pra revisar os pontos importantes antes, durante e depois de executar o serviço.",
     capa: "", formato: "PDF",
-    link: "materiais/06-manual-seguranca-checklist.pdf" /* arquivo na pasta materiais, ao lado do app */ },
+    link: "06-manual-seguranca-checklist.pdf" /* arquivo na pasta materiais, ao lado do app */ },
 
   { id: "apostila-instalacao", icone: "paginas",
     titulo: "Apostila Completa de Instalação Elétrica",
     desc: "Apostila para estudar e consultar instalações elétricas sempre que precisar.",
     capa: "", formato: "PDF",
-    link: "materiais/07-apostila-instalacao-eletrica.pdf" /* arquivo na pasta materiais, ao lado do app */ },
+    link: "07-apostila-instalacao-eletrica.pdf" /* arquivo na pasta materiais, ao lado do app */ },
 
   // TROCAR: confirme o nome deste material (foi escrito como "Curso Rápido de Eletrodoméstico Residencial").
   { id: "curso-eletrodomestico", icone: "tomada",
     titulo: "Curso Rápido de Eletrodoméstico Residencial",
     desc: "Conteúdo rápido e direto sobre eletrodomésticos na residência.",
     capa: "", formato: "PDF",
-    link: "materiais/08-curso-rapido-eletrodomestico.pdf" /* arquivo na pasta materiais, ao lado do app */ },
+    link: "08-curso-rapido-eletrodomestico.pdf" /* arquivo na pasta materiais, ao lado do app */ },
 
   { id: "projetos-iniciantes", icone: "casa",
     titulo: "Projetos Residenciais de Eletricidade para Iniciantes",
     desc: "Projetos residenciais pensados para quem está começando na elétrica.",
     capa: "", formato: "PDF",
-    link: "materiais/09-projetos-residenciais-iniciantes.pdf" /* arquivo na pasta materiais, ao lado do app */ },
+    link: "09-projetos-residenciais-iniciantes.pdf" /* arquivo na pasta materiais, ao lado do app */ },
 
   { id: "projeto-passo-a-passo", icone: "diagrama",
     titulo: "Como Fazer um Projeto Elétrico Passo a Passo",
     desc: "O caminho para montar um projeto elétrico, etapa por etapa.",
     capa: "", formato: "PDF",
-    link: "materiais/10-projeto-eletrico-passo-a-passo.pdf" /* arquivo na pasta materiais, ao lado do app */ },
+    link: "10-projeto-eletrico-passo-a-passo.pdf" /* arquivo na pasta materiais, ao lado do app */ },
 
   { id: "entendendo-projeto", icone: "quadro",
     titulo: "Entendendo um Projeto de Elétrica Residencial",
     desc: "Aprenda a ler e interpretar um projeto de elétrica residencial.",
     capa: "", formato: "PDF",
-    link: "materiais/11-entendendo-projeto-eletrica.pdf" /* arquivo na pasta materiais, ao lado do app */ }
+    link: "11-entendendo-projeto-eletrica.pdf" /* arquivo na pasta materiais, ao lado do app */ }
 ];
 
 
